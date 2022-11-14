@@ -10,8 +10,8 @@ from models.dog import Dog
 from models.medical_centres import Medical_Centres
 
 classes = {"BaseModel": BaseModel, "State": State, "City": City,
-               "Owner": Owner, "Dog": Dog,
-               "Medical_Centres": Medical_Centres}
+           "Owner": Owner, "Dog": Dog,
+           "Medical_Centres": Medical_Centres}
 
 # check environ var to determine storage method
 if getenv('TYPE_STORAGE') == 'db':

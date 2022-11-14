@@ -16,7 +16,7 @@ class Owner(BaseModel, Base):
         first_name = Column(String(128), nullable=True)
         last_name = Column(String(128), nullable=True)
 
-        Dog = relationship("Dog", backref="owner", cascade="all, delete")
+        dog = relationship("Dog", backref="owner", cascade="all, delete")
 
     else:
         email = ""

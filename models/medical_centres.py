@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" Place Module for HBNB project """
+""" Medical centres module for HappyPup project """
 from models.basemodel import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
@@ -16,6 +16,11 @@ class Medical_Centres(BaseModel, Base):
         name = Column(String(128), nullable=False)
         description = Column(String(1024), nullable=True)
         address = Column(String(1024), nullable=False)
+
+        city = relationship("City", backref="medical_centres",
+                            cascade="all, delete")
+        state = relationship("State", backref="medical_centres",
+                             cascade="all, delete")
 
     else:
         city_id = ""
