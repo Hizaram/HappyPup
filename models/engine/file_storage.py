@@ -1,56 +1,72 @@
-#!/usr/bin/python3
-"""This module defines a file storage class for HappyPup project"""
+#!/usr/bin/env python3
+'''
+    Class FileStorage file.
+    This class is needed to create/destroy JSON file.
+'''
 import json
+import models
+from models.basemodel import BaseModel
+from models.owner import Owner
+from models.state import State
+from models.city import City
+from models.dog import Dog
+from models.medical_centres import Medical_Centres
 
 
 class FileStorage:
-    """This class manages storage of HappyPup models in JSON format"""
-    __file_path = 'file.json'
+    '''
+        Serializes instances to JSON file and deserializes to JSON file.
+    '''
+    __file_path = "file.json"
     __objects = {}
 
     def all(self, cls=None):
-        """Returns a dictionary of models currently in storage"""
-        obj_list = FileStorage.__objects
-        if cls:
-            obj_list = {}
-            for key, value in FileStorage.__objects.items():
-                if type(value) == cls:
-                    obj_list[key] = value
-        return obj_list
+        '''
+            This method returns the dictionary
+        '''
+        hello = {}
+        if cls is None:
+            return (self.__objects)
+        else:
+            if type(cls) is str:
+                cls = models.classes[cls]
+            for key, val in self.__objects.items():
+                if cls.__name__ == val.__class__.__name__:
+                    hello[key] = val
+            return (hello)
 
     def new(self, obj):
-        """Adds new object to storage dictionary"""
-        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
+        '''
+           new(self, obj): sets in __objects, the obj with key
+           <obj class name>.id
+        '''
+        key = str(obj.__class__.__name__) + "." + str(obj.id)
+        self.__objects[key] = obj
 
     def save(self):
-        """Saves storage dictionary to file"""
-        with open(FileStorage.__file_path, 'w') as f:
-            temp = {}
-            temp.update(FileStorage.__objects)
-            for key, val in temp.items():
-                temp[key] = val.to_dict()
-            json.dump(temp, f)
+        '''
+            save(self): serializes __objects to the JSON
+            file (path: __file_path)
+        '''
+        objects_dict = {}
+        for key, val in self.__objects.items():
+            objects_dict[key] = val.to_dict()
+
+        with open(self.__file_path, mode='w', encoding="utf-8") as fh:
+            json.dump(objects_dict, fh)
 
     def reload(self):
-        """Loads storage dictionary from file"""
-        from models.basemodel import BaseModel
-        from models.owner import Owner
-        from models.dog import Dog
-        from models.state import State
-        from models.city import City
-        from models.medical_centres import Medical_Centres
-
-        classes = {
-                    'BaseModel': BaseModel, 'Owner': Owner, 'Dog': Dog,
-                    'State': State, 'City': City,
-                    'Medical_Centres': Medical_Centres,
-                  }
+        '''
+            reload(self): deserializes the JSON file to __objects
+            (only if the JSON file (__file_path) exists ; otherwise, do
+            nothing. If the file doesn’t exist, no exception should be raised)
+        '''
         try:
-            temp = {}
-            with open(FileStorage.__file_path, 'r') as f:
-                temp = json.load(f)
-                for key, val in temp.items():
-                    self.all()[key] = classes[val['__class__']](**val)
+            with open(self.__file_path, 'r', encoding='utf-8') as f:
+                json_dict = json.load(f)
+                for obj_dict in json_dict.values():
+                    cls = obj_dict['__class__']
+                    self.new(eval('{}({})'.format(cls, '**obj_dict')))
         except FileNotFoundError:
             pass
 
@@ -62,5 +78,7 @@ class FileStorage:
             self.save()
 
     def close(self):
-        """Closes a session and deserializes our JSON file"""
+        """
+        Reload objects from JSON file
+        """
         self.reload()
