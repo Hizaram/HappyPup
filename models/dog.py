@@ -11,7 +11,7 @@ class Dog(BaseModel, Base):
     """ A class that defines the pets, dogs"""
     __tablename__ = "dogs"
     if getenv('TYPE_STORAGE') == 'db':
-        owner_id = Column(String(60), ForeignKey("owner.id"), nullable=False)
+        owner_id = Column(String(60), ForeignKey("owners.id"), nullable=False)
         name = Column(String(128), nullable=False)
         sex = Column(String(20), nullable=True)
         age = Column(Integer, default=0, nullable=False)
