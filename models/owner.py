@@ -10,17 +10,17 @@ class Owner(BaseModel, Base):
     """This class defines a dog owner by various attributes"""
     __tablename__ = "owners"
     if getenv('TYPE_STORAGE') == 'db':
-        email = Column(String(128), nullable=False)
-        password = Column(String(128), nullable=False)
+        fname = Column(String(128), nullable=False)
+        lname = Column(String(128), nullable=False)
         phone = Column(String(20), nullable=False)
-        fname = Column(String(128), nullable=True)
-        lname = Column(String(128), nullable=True)
+        email = Column(String(128), nullable=True)
+        password = Column(String(128), nullable=True)
 
         dog = relationship("Dog", backref="owner", cascade="all, delete")
 
     else:
-        email = ""
-        password = ""
-        phone = ""
         fname = ""
         lname = ""
+        phone = ""
+        email = ""
+        password = ""

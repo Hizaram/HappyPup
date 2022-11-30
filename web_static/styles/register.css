@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+* {
+        padding: 0;
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+}
+
+section {
+        position: relative;
+        width: 100%;
+        min-height: 130vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        background: url(../images/login.jpg)no-repeat;
+        background-size: cover;
+        background-position: center;
+}
+
+header{
+        position: relative;
+        top: 0;
+        width: 100%;
+        padding: 30px 100px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+}
+
+header .logo{
+        position: relative;
+        color: #000;
+        font-size: 30px;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-weight: 800;
+        letter-spacing: 1px;
+}
+
+header .logo span{
+	        color: #fff;
+}
+
+.login-form{
+        width: 350px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        position: absolute;
+        color: #fff;
+}
+
+.login-form h1{
+        font-size: 40px;
+        text-align: center;
+        text-transform: uppercase;
+        margin: 40px 0;
+}
+
+.login-form p{
+        font-size: 20px;
+        margin: 15px 0;
+}
+
+.login-form input{
+        font-size: 16px;
+        width: 100%;
+        padding: 15px 10px;
+        border: 0;
+        outline: none;
+        border-radius: 5px;
+}
+
+.login-form button{
+        font-size: 18px;
+        font-weight: bold;
+        margin: 20px 0;
+        padding: 10px 15px;
+        width: 50%;
+        border-radius: 5px;
+        border: 0;
+}
+
+.login-form button:hover{
+        color: #b2571b;
+}
+
+@media (max-width: 960px){
+        .login-form{
+                width: 250px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                position: absolute;
+                color: #fff;
+        }
+
+        header .logo{
+                position: absolute;
+                bottom: -10px;
+        }
+
+	section {
+        position: relative;
+        width: 100%;
+        min-height: 130vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        background: url(../images/login.jpg)no-repeat;
+        background-size: cover;
+        background-position: center;
+	}
+
+	.login-form h1{
+        font-size: 30px;
+        text-align: center;
+        text-transform: uppercase;
+        margin: 40px 0;
+	}
+
+	.login-form p{
+        font-size: 10px;
+        margin: 8px 0;
+}
+
+.login-form input{
+        font-size: 15px;
+        width: 100%;
+        padding: 16px 10px;
+        border: 0;
+        outline: none;
+        border-radius: 5px;
+}
+
+.login-form button{
+        font-size: 13px;
+        font-weight: bold;
+        margin: 20px 0;
+        padding: 10px 15px;
+        width: 50%;
+        border-radius: 5px;
+        border: 0;
+}
+
+}
