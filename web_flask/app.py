@@ -1,20 +1,18 @@
 #!/usr/bin/python3
 """Flask application for the HappyPup project"""
 
-from flask import Flask, render_template, request,url_for, redirect, jsonify
+from flask import Flask, render_template, session, request, url_for, redirect, jsonify
 from flask_mysqldb import MySQL
 from models.owner import Owner
+from flask_session import Session
 import json
 from models import storage
 
 app = Flask(__name__)
+app.config.from_pyfile('config.py')
 
-app.config['MYSQL_HOST'] = "localhost"
-app.config['MYSQL_USER'] = "hpup_dev"
-app.config['MYSQL_PASSWORD'] = "hpup_dev_pwd"
-app.config["MYSQL_DB"] = 'happy_pup_db'
-app.config['MYSQL_TYPE_STORAGE'] = "db"
 mysql = MySQL(app)
+Session(app)
 
 @app.route("/")
 def hello_index():
@@ -30,17 +28,24 @@ def hello_register():
 
 @app.route("/app.py", methods=['GET', 'POST'])
 def login():
+    """Defines the form logic, querying the database and validating
+    user input"""
     if 'login' in request.form:
         if request.method == 'POST':
-            o_email = request.form['email']
+            o_email= request.form['email']
             o_password = request.form['password']
             try:
                 cur = mysql.connection.cursor()
-                cur.execute("SELECT email, password  FROM owners WHERE email=%s AND password=%s;",
+                cur.execute("SELECT * FROM owners WHERE email=%s AND password=%s;",
                             [o_email, o_password])
                 res = cur.fetchone()
+
                 if res:
-                    return redirect(url_for('hello_dashboard'))
+                    session['fname'] = res[6] + " " + res[7]
+                    session['email'] = res[3]
+                    session['phone'] = res[5]
+                    session['id'] = res[0]
+                    return redirect(url_for("dashboard"))
                 else:
                     return render_template('0-index.html')
             except Exception as e:
@@ -57,7 +62,9 @@ def login():
             phone = request.form['phonenumber']
             email = request.form['email']
             password = request.form['password']
-            content = {"fname":str(fname), "lname":str(lname), "phone":str(phone), "email":str(email), "password":str(password)}
+            content = {"fname":str(fname), "lname":str(lname),
+                       "phone":str(phone), "email":str(email),
+                       "password":str(password)}
 
             if type(content) is dict:
                 if "fname" in content.keys():
@@ -74,12 +81,13 @@ def login():
                     phone = o_dict['phone']
                     password = o_dict['password']
                     cur = mysql.connection.cursor()
-                    cur.execute("INSERT into owners (id, created_at, updated_at, email, password, phone, fname, lname) values(%s, %s, %s, %s, %s, %s, %s, %s);", [id, c_at, u_at, email, password, phone, fname, lname])
+                    cur.execute("INSERT into owners (id, created_at, updated_at, email, password, phone, fname, lname) values(%s, %s, %s, %s, %s, %s, %s, %s);",
+                                [id, c_at, u_at, email, password, phone, fname, lname])
                     response.status_code = 201
                     mysql.connection.commit()
                     cur.close()
                     #return response
-                    return redirect(url_for("login"))
+                    return redirect(url_for("hello_login"))
                 else:
                     error_message = "Missing name"
             else:
@@ -90,10 +98,17 @@ def login():
 
     return render_template("0-index.html")
 
-@app.route("/dashboard.html")
-def hello_dashboard():
+@app.route("/dashboard.html", methods=['GET', 'POST'])
+def dashboard():
+    """Displays the information needed for the dashboard including
+    the owner details and dog details"""
     return render_template("dashboard.html")
 
+@app.route("/logout.html")
+def logout():
+    """Redirects back to the home page and ends the session"""
+    session.clear()
+    return redirect(url_for("hello_index"))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, threaded=True)
